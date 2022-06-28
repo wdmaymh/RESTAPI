@@ -28,13 +28,64 @@ class BillMasterControllerTest {
     ObjectMapper objectMapper;
 
     @Test
-    public void createBillmaster() throws Exception {
+    public void createBillMasterBadRequest() throws Exception {
         BillMaster billMaster = BillMaster.builder()
                 .billTitle("Spring")
                 .billStsCd("10")
                 .accYear("2022")
+                .campusCd("1")
+                .accUnitCd("01")
+                .billNo(100)
                 .build();
-        billMaster.setBillNo(100);
+
+        mockMvc.perform(post("/api/billMasters/")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaTypes.HAL_JSON)
+                        .content(objectMapper.writeValueAsString(billMaster)))
+                .andDo(print())
+                .andExpect(status().isBadRequest())
+
+        ;
+
+    }
+
+    @Test
+    public void createBillMasterBadRequestEmptyInput() throws Exception {
+        BillMasterDto billMasterDto = BillMasterDto.builder().build();
+
+        mockMvc.perform(post("/api/billMasters/")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(this.objectMapper.writeValueAsString(billMasterDto)))
+                .andDo(print())
+                .andExpect(status().isBadRequest())
+        ;
+    }
+
+    @Test
+    public void createBillMasterBadRequestWrongInput() throws Exception {
+        BillMasterDto billMasterDto = BillMasterDto.builder()
+                .accUnitCd("01")
+                .accYear("2022")
+                .campusCd("3")
+                .build();
+
+        mockMvc.perform(post("/api/billMasters/")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(this.objectMapper.writeValueAsString(billMasterDto)))
+                .andDo(print())
+                .andExpect(status().isBadRequest())
+                ;
+    }
+
+    @Test
+    public void createBillMaster() throws Exception {
+        BillMasterDto billMaster = BillMasterDto.builder()
+                .billTitle("Spring")
+                .billStsCd("10")
+                .accYear("2022")
+                .campusCd("1")
+                .accUnitCd("01")
+                .build();
 
         mockMvc.perform(post("/api/billMasters/")
                         .contentType(MediaType.APPLICATION_JSON)

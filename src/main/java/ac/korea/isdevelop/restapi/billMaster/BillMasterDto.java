@@ -5,14 +5,19 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.validation.constraints.NotEmpty;
+
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
 public class BillMasterDto {
 
+    @NotEmpty
     public String accYear;
+    @NotEmpty
     public String campusCd;
+    @NotEmpty
     public String accUnitCd;
     public String billDt;
     public String billDeptCd;
