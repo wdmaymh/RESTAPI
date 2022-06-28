@@ -2,14 +2,18 @@ package ac.korea.isdevelop.restapi.billMaster;
 
 import lombok.*;
 
+import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter @Setter @EqualsAndHashCode(of=" billNo")
+@Entity
 public class BillMaster {
 
+    @Id
+    @GeneratedValue
     public long billNo;
     public String accYear;
     public String campusCd;
