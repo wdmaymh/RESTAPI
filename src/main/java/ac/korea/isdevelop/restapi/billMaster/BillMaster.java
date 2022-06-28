@@ -39,5 +39,4 @@ public class BillMaster {
     public String crtId;
     public String crtPgmId;
     public String crtIp;
-    public String mgtItemData_1;
 }
