@@ -2,6 +2,8 @@ package ac.korea.isdevelop.restapi.billMaster;
 
 import lombok.*;
 
+import java.time.LocalDateTime;
+
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
@@ -29,7 +31,7 @@ public class BillMaster {
     public long billGrpNo;
     public String interfaceKey;
     public String interfaceDivCd;
-    public java.sql.Timestamp crtDttm;
+    public LocalDateTime crtDttm;
     public String crtId;
     public String crtPgmId;
     public String crtIp;
