@@ -2,6 +2,7 @@ package ac.korea.isdevelop.restapi.billMaster;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.hamcrest.Matchers;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +29,7 @@ class BillMasterControllerTest {
     ObjectMapper objectMapper;
 
     @Test
+    @DisplayName("허용되지 않은 요청값(ex billNo) 전달시 에러가 발생하는 테스트")
     public void createBillMasterBadRequest() throws Exception {
         BillMaster billMaster = BillMaster.builder()
                 .billTitle("Spring")
@@ -50,6 +52,7 @@ class BillMasterControllerTest {
     }
 
     @Test
+    @DisplayName("필수값(ex accUintCd)이 누락된 객체 전달시 에러가 발생하는 테스트")
     public void createBillMasterBadRequestEmptyInput() throws Exception {
         BillMasterDto billMasterDto = BillMasterDto.builder().build();
 
@@ -62,6 +65,7 @@ class BillMasterControllerTest {
     }
 
     @Test
+    @DisplayName("허용되지 않은 값(ex campusCd=3) 전달시 에러가 발생하는 테스트")
     public void createBillMasterBadRequestWrongInput() throws Exception {
         BillMasterDto billMasterDto = BillMasterDto.builder()
                 .accUnitCd("01")
@@ -78,6 +82,7 @@ class BillMasterControllerTest {
     }
 
     @Test
+    @DisplayName("정상처리 테스트")
     public void createBillMaster() throws Exception {
         BillMasterDto billMaster = BillMasterDto.builder()
                 .billTitle("Spring")
