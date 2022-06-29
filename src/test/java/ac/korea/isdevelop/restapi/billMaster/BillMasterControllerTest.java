@@ -107,6 +107,9 @@ class BillMasterControllerTest {
                 .andExpect(header().exists(HttpHeaders.LOCATION))
                 .andExpect(header().string(HttpHeaders.CONTENT_TYPE, MediaTypes.HAL_JSON_VALUE+";charset=UTF-8"))
                 .andExpect(jsonPath("billNo").value(Matchers.not(100)))
+                .andExpect(jsonPath("_links.self").exists())
+                .andExpect(jsonPath("_links.query-billMaster").exists())
+                .andExpect(jsonPath("_links.update-billMaster").exists())
 
         ;
 

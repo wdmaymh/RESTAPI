@@ -2,6 +2,7 @@ package ac.korea.isdevelop.restapi.billMaster;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.hateoas.MediaTypes;
+import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.Errors;
@@ -30,7 +31,7 @@ public class BillMasterController {
     }
 
     @PostMapping
-    public ResponseEntity createBillMaster(@RequestBody @Valid BillMasterDto billMasterDto, Errors errors) {
+    public ResponseEntity<?> createBillMaster(@RequestBody @Valid BillMasterDto billMasterDto, Errors errors) {
 
         if(errors.hasErrors()){
             return ResponseEntity.badRequest().body(errors);
@@ -42,8 +43,10 @@ public class BillMasterController {
 
         BillMaster billMaster = modelMapper.map(billMasterDto, BillMaster.class);
         BillMaster newBillMaster = billMasterRepository.save(billMaster);
-        URI uri = linkTo(BillMasterController.class).slash(newBillMaster.getBillNo()).toUri();
-        return ResponseEntity.created(uri).body(billMaster);
+        WebMvcLinkBuilder linkBuilder = linkTo(BillMasterController.class).slash(newBillMaster.getBillNo());
+        URI uri = linkBuilder.toUri();
+        BillMasterResource billMasterResource = new BillMasterResource(newBillMaster);
+        return ResponseEntity.created(uri).body(billMasterResource);
 
     }
 }
