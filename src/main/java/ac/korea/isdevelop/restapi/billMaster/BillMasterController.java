@@ -33,11 +33,11 @@ public class BillMasterController {
     public ResponseEntity createBillMaster(@RequestBody @Valid BillMasterDto billMasterDto, Errors errors) {
 
         if(errors.hasErrors()){
-            return ResponseEntity.badRequest().build();
+            return ResponseEntity.badRequest().body(errors);
         }
         billMasterValidator.validate(billMasterDto, errors);
         if(errors.hasErrors()){
-            return ResponseEntity.badRequest().build();
+            return ResponseEntity.badRequest().body(errors);
         }
 
         BillMaster billMaster = modelMapper.map(billMasterDto, BillMaster.class);
