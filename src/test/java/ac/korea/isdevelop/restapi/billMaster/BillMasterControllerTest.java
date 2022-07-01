@@ -18,7 +18,13 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.time.LocalDateTime;
+
+import static org.springframework.restdocs.headers.HeaderDocumentation.*;
+import static org.springframework.restdocs.hypermedia.HypermediaDocumentation.linkWithRel;
+import static org.springframework.restdocs.hypermedia.HypermediaDocumentation.links;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
+import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -82,14 +88,14 @@ class BillMasterControllerTest {
                 .build();
 
         mockMvc.perform(post("/api/billMasters/")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(this.objectMapper.writeValueAsString(billMasterDto)))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(this.objectMapper.writeValueAsString(billMasterDto)))
                 .andDo(print())
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$[0].objectName").exists())
                 .andExpect(jsonPath("$[0].defaultMessage").exists())
                 .andExpect(jsonPath("$[0].code").exists())
-                ;
+        ;
     }
 
     @Test
@@ -111,13 +117,74 @@ class BillMasterControllerTest {
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("billNo").exists())
                 .andExpect(header().exists(HttpHeaders.LOCATION))
-                .andExpect(header().string(HttpHeaders.CONTENT_TYPE, MediaTypes.HAL_JSON_VALUE+";charset=UTF-8"))
+                .andExpect(header().string(HttpHeaders.CONTENT_TYPE, MediaTypes.HAL_JSON_VALUE + ";charset=UTF-8"))
                 .andExpect(jsonPath("billNo").value(Matchers.not(100)))
                 .andExpect(jsonPath("_links.self").exists())
                 .andExpect(jsonPath("_links.query-billMaster").exists())
                 .andExpect(jsonPath("_links.update-billMaster").exists())
-                .andDo(document("create-billMaster"))
+                .andDo(document("create-billMaster",
+                        links(
+                                linkWithRel("self").description("link to self"),
+                                linkWithRel("query-billMaster").description("link to query bill masters"),
+                                linkWithRel("update-billMaster").description("link to update query master")
+                        ),
+                        requestHeaders(
+                                headerWithName(HttpHeaders.ACCEPT).description("accept header"),
+                                headerWithName(HttpHeaders.CONTENT_TYPE).description("content type header")
+                        ),
+                        requestFields(
+                                fieldWithPath("billTitle").description("Title of bill master"),
+                                fieldWithPath("billStsCd").description("status of bill master"),
+                                fieldWithPath("accYear").description("Acc year of bill master"),
+                                fieldWithPath("accUnitCd").description("Acc unit  of bill master"),
+                                fieldWithPath("campusCd").description("Campus  of bill master"),
+                                fieldWithPath("billDt").description("Title of bill master"),
+                                fieldWithPath("billDeptCd").description("status of bill master"),
+                                fieldWithPath("billDivCd").description("Title of bill master"),
+                                fieldWithPath("billTypeCd").description("status of bill master"),
+                                fieldWithPath("billKindCd").description("Acc year of bill master"),
+                                fieldWithPath("wrtEmpObjNo").description("Acc unit  of bill master"),
+                                fieldWithPath("wrtEmpObjNo").description("Campus  of bill master"),
+                                fieldWithPath("digest").description("Acc year of bill master"),
+                                fieldWithPath("interfaceKey").description("Acc unit  of bill master"),
+                                fieldWithPath("interfaceDivCd").description("Campus  of bill master")
+                        ),
+                        responseHeaders(
+                                headerWithName(HttpHeaders.LOCATION).description(""),
+                                headerWithName(HttpHeaders.CONTENT_TYPE).description("")
+                        ),
+                        responseFields(
 
+                                fieldWithPath("billNo").description("Title of bill master"),
+                                fieldWithPath("accYear").description("Acc year of bill master"),
+                                fieldWithPath("campusCd").description("Campus  of bill master"),
+                                fieldWithPath("accUnitCd").description("Acc unit  of bill master"),
+                                fieldWithPath("billDt").description("Title of bill master"),
+                                fieldWithPath("billDocNo").description("Campus  of bill master"),
+                                fieldWithPath("billDeptCd").description("status of bill master"),
+                                fieldWithPath("billDivCd").description("Title of bill master"),
+                                fieldWithPath("billTypeCd").description("status of bill master"),
+                                fieldWithPath("billKindCd").description("Acc year of bill master"),
+                                fieldWithPath("wrtEmpObjNo").description("Acc unit  of bill master"),
+                                fieldWithPath("billTitle").description("Title of bill master"),
+                                fieldWithPath("digest").description("Acc year of bill master"),
+                                fieldWithPath("billStsCd").description("status of bill master"),
+                                fieldWithPath("billDeptAprvDt").description("Acc year of bill master"),
+                                fieldWithPath("deptAprvEmpObjNo").description("Acc unit  of bill master"),
+                                fieldWithPath("accDt").description("Campus  of bill master"),
+                                fieldWithPath("execAprvDt").description("Acc year of bill master"),
+                                fieldWithPath("billGrpNo").description("Acc unit  of bill master"),
+                                fieldWithPath("interfaceKey").description("Acc unit  of bill master"),
+                                fieldWithPath("interfaceDivCd").description("Campus  of bill master"),
+                                fieldWithPath("crtDttm").description("Campus  of bill master"),
+                                fieldWithPath("crtId").description("Acc year of bill master"),
+                                fieldWithPath("crtPgmId").description("Acc unit  of bill master"),
+                                fieldWithPath("crtIp").description("Campus  of bill master"),
+                                fieldWithPath("_links.self.href").description("Acc year of bill master"),
+                                fieldWithPath("_links.update-billMaster.href").description("Acc unit  of bill master"),
+                                fieldWithPath("_links.query-billMaster.href").description("Campus  of bill master")
+                        )
+                ))
         ;
 
     }
