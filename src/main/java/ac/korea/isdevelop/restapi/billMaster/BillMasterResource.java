@@ -12,7 +12,7 @@ public class BillMasterResource extends EntityModel<BillMaster> {
         WebMvcLinkBuilder linkBuilder = linkTo(BillMasterController.class).slash(billMaster.getBillNo());
         add(linkBuilder.withSelfRel());
         add(linkBuilder.withRel("update-billMaster"));
-        add(linkTo(BillMasterController.class).withRel("query-billMaster"));
+        add(linkTo(BillMasterController.class).withRel("query-billMasters"));
     }
 
 }

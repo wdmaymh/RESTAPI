@@ -18,14 +18,14 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
-import java.time.LocalDateTime;
+import java.util.stream.IntStream;
 
 import static org.springframework.restdocs.headers.HeaderDocumentation.*;
 import static org.springframework.restdocs.hypermedia.HypermediaDocumentation.linkWithRel;
 import static org.springframework.restdocs.hypermedia.HypermediaDocumentation.links;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -41,6 +41,46 @@ class BillMasterControllerTest {
     MockMvc mockMvc;
     @Autowired
     ObjectMapper objectMapper;
+    @Autowired
+    BillMasterRepository billMasterRepository;
+
+    @Test
+    @DisplayName("30개의 이벤트를 10개씩 두번째 페이지 조회하기")
+    public void queryBillMaster() throws Exception {
+
+        //Given
+        IntStream.range(0, 30).forEach(i -> this.generateBillMaster(i));
+
+        //When
+        this.mockMvc.perform(get("/api/billMasters")
+                        .param("page", "1")
+                        .param("size", "10")
+                        .param("sort", "billTitle,DESC")
+                )
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("page").exists())
+                .andExpect(jsonPath("_embedded.billMasterList[0]._links.self").exists())
+                .andExpect(jsonPath("_links.self").exists())
+                .andExpect(jsonPath("_links.profile").exists())
+                .andDo(document("query-billmasters"))
+        ;
+    }
+
+    private void generateBillMaster(int index) {
+
+        BillMaster billMaster = BillMaster.builder()
+                .billTitle("Test" + index)
+                .billStsCd("10")
+                .accYear("2022")
+                .campusCd("1")
+                .accUnitCd("01")
+                .build();
+
+        BillMaster newBillMaster = this.billMasterRepository.save(billMaster);
+
+
+    }
 
     @Test
     @DisplayName("허용되지 않은 요청값(ex billNo) 전달시 에러가 발생하는 테스트")
@@ -120,13 +160,14 @@ class BillMasterControllerTest {
                 .andExpect(header().string(HttpHeaders.CONTENT_TYPE, MediaTypes.HAL_JSON_VALUE + ";charset=UTF-8"))
                 .andExpect(jsonPath("billNo").value(Matchers.not(100)))
                 .andExpect(jsonPath("_links.self").exists())
-                .andExpect(jsonPath("_links.query-billMaster").exists())
+                .andExpect(jsonPath("_links.query-billMasters").exists())
                 .andExpect(jsonPath("_links.update-billMaster").exists())
                 .andDo(document("create-billMaster",
                         links(
                                 linkWithRel("self").description("link to self"),
-                                linkWithRel("query-billMaster").description("link to query bill masters"),
-                                linkWithRel("update-billMaster").description("link to update query master")
+                                linkWithRel("query-billMasters").description("link to query bill masters"),
+                                linkWithRel("update-billMaster").description("link to update query master"),
+                                linkWithRel("profile").description("link to profile")
                         ),
                         requestHeaders(
                                 headerWithName(HttpHeaders.ACCEPT).description("accept header"),
@@ -182,7 +223,8 @@ class BillMasterControllerTest {
                                 fieldWithPath("crtIp").description("Campus  of bill master"),
                                 fieldWithPath("_links.self.href").description("Acc year of bill master"),
                                 fieldWithPath("_links.update-billMaster.href").description("Acc unit  of bill master"),
-                                fieldWithPath("_links.query-billMaster.href").description("Campus  of bill master")
+                                fieldWithPath("_links.query-billMasters.href").description("Campus  of bill master"),
+                                fieldWithPath("_links.profile.href").description("Campus  of bill master")
                         )
                 ))
         ;
