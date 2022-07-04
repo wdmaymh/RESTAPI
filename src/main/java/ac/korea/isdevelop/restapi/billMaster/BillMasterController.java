@@ -1,13 +1,12 @@
 package ac.korea.isdevelop.restapi.billMaster;
 
+import ac.korea.isdevelop.restapi.common.ErrorsResource;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PagedResourcesAssembler;
-import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.Link;
 import org.springframework.hateoas.MediaTypes;
-import org.springframework.hateoas.PagedModel;
 import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -19,7 +18,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import javax.validation.Valid;
 import java.net.URI;
-
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 
@@ -41,11 +39,11 @@ public class BillMasterController {
     public ResponseEntity<?> createBillMaster(@RequestBody @Valid BillMasterDto billMasterDto, Errors errors) {
 
         if(errors.hasErrors()){
-            return ResponseEntity.badRequest().body(errors);
+            return badRequest(errors);
         }
         billMasterValidator.validate(billMasterDto, errors);
         if(errors.hasErrors()){
-            return ResponseEntity.badRequest().body(errors);
+            return badRequest(errors);
         }
 
         BillMaster billMaster = modelMapper.map(billMasterDto, BillMaster.class);
@@ -56,6 +54,10 @@ public class BillMasterController {
         billMasterResource.add(Link.of("/docs/index.html#resources-billmaster-create").withRel("profile"));
         return ResponseEntity.created(uri).body(billMasterResource);
 
+    }
+
+    private ResponseEntity<?> badRequest(Errors errors) {
+        return ResponseEntity.badRequest().body(new ErrorsResource(errors));
     }
 
     @GetMapping
