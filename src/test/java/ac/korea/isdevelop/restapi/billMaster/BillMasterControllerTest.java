@@ -45,14 +45,41 @@ class BillMasterControllerTest {
     BillMasterRepository billMasterRepository;
 
     @Test
-    @DisplayName("30개의 이벤트를 10개씩 두번째 페이지 조회하기")
-    public void queryBillMaster() throws Exception {
+    @DisplayName("기존의 이벤트를 하나 조회하기")
+    public void getBillMaster() throws Exception {
 
         //Given
-        IntStream.range(0, 30).forEach(i -> this.generateBillMaster(i));
+        long billNo=11895005;
+
+        //When & Then
+        this.mockMvc.perform(get("/api/billMasters/{id}", billNo))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("accUnitCd").exists())
+                .andExpect(jsonPath("accYear").exists())
+                .andExpect(jsonPath("campusCd").exists())
+                .andExpect(jsonPath("_links.self").exists())
+                .andExpect(jsonPath("_links.profile").exists())
+        ;
+
+    }
+
+    @Test
+    @DisplayName("없는 bill를 조회했을 때 404 응답받기")
+    public  void  getBillMaster404() throws  Exception{
+        this.mockMvc.perform(get("/api/billMasters/0"))
+                .andExpect(status().isNotFound())
+                ;
+    }
+
+    @Test
+    @DisplayName("결의서 10개씩 두번째 페이지 조회하기")
+    public void getBillMasters() throws Exception {
+
+        //Given
+        //IntStream.range(0, 30).forEach(i -> this.generateBillMaster(i));
 
         //When
-        this.mockMvc.perform(get("/api/billMasters")
+        this.mockMvc.perform(get("/api/billMasters/2021/2/18")
                         .param("page", "1")
                         .param("size", "10")
                         .param("sort", "billTitle,DESC")
@@ -67,7 +94,9 @@ class BillMasterControllerTest {
         ;
     }
 
-    private void generateBillMaster(int index) {
+
+
+    private BillMaster generateBillMaster(int index) {
 
         BillMaster billMaster = BillMaster.builder()
                 .billTitle("Test" + index)
@@ -78,6 +107,8 @@ class BillMasterControllerTest {
                 .build();
 
         BillMaster newBillMaster = this.billMasterRepository.save(billMaster);
+
+        return newBillMaster;
 
 
     }
@@ -148,6 +179,10 @@ class BillMasterControllerTest {
                 .accYear("2022")
                 .campusCd("1")
                 .accUnitCd("01")
+                .billDt("20220301")
+                .billDivCd("10")
+                .billTypeCd("010")
+                .billKindCd("101")
                 .build();
 
         mockMvc.perform(post("/api/billMasters/")
@@ -196,7 +231,6 @@ class BillMasterControllerTest {
                                 headerWithName(HttpHeaders.CONTENT_TYPE).description("")
                         ),
                         responseFields(
-
                                 fieldWithPath("billNo").description("Title of bill master"),
                                 fieldWithPath("accYear").description("Acc year of bill master"),
                                 fieldWithPath("campusCd").description("Campus  of bill master"),
@@ -225,7 +259,8 @@ class BillMasterControllerTest {
                                 fieldWithPath("_links.self.href").description("Acc year of bill master"),
                                 fieldWithPath("_links.update-billMaster.href").description("Acc unit  of bill master"),
                                 fieldWithPath("_links.query-billMasters.href").description("Campus  of bill master"),
-                                fieldWithPath("_links.profile.href").description("Campus  of bill master")
+                                fieldWithPath("_links.profile.href").description("Campus  of bill master"),
+                                fieldWithPath("table_PREFIX").description("Title of bill master")
                         )
                 ))
         ;
