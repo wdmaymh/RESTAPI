@@ -1,6 +1,7 @@
 package ac.korea.isdevelop.restapi.billMaster;
 
 import ac.korea.isdevelop.restapi.common.ErrorsResource;
+import com.querydsl.core.types.Predicate;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -61,9 +62,15 @@ public class BillMasterController {
     @GetMapping("/{accyear}/{campusCd}/{accUnitCd}")
     public ResponseEntity<?> queryBillMasters(@PathVariable String accyear, @PathVariable String campusCd, @PathVariable String accUnitCd,
                                               Pageable pageable, PagedResourcesAssembler<BillMaster> assembler) {
-        //Page<BillMaster> page = this.billMasterRepository.findAll(pageable);
-        Page<BillMaster> page = this.billMasterRepository.findByAccYearEqualsAndCampusCdEqualsAndAccUnitCdEquals
-                (accyear, campusCd, accUnitCd, pageable);
+
+        QBillMaster billMaster = QBillMaster.billMaster;
+        Predicate predicate = billMaster
+                .accYear.eq(accyear)
+                .and(billMaster.campusCd.eq(campusCd))
+                .and(billMaster.accUnitCd.eq(accUnitCd))
+                ;
+        Page<BillMaster> page = billMasterRepository.findAll(predicate, pageable);
+
         var pagedModel = assembler.toModel(page, b -> new BillMasterResource(b));
         pagedModel.add(Link.of("/docs/index.html#resources-billMasters-list").withRel("profile"));
         return ResponseEntity.ok(pagedModel);
