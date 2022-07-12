@@ -1,5 +1,6 @@
 package ac.korea.isdevelop.restapi.billMaster;
 
+import ac.korea.isdevelop.restapi.cardProof.QCardProof;
 import ac.korea.isdevelop.restapi.common.ErrorsResource;
 import com.querydsl.core.types.Predicate;
 import org.modelmapper.ModelMapper;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.net.URI;
+import java.util.List;
 import java.util.Optional;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
@@ -63,12 +65,15 @@ public class BillMasterController {
     public ResponseEntity<?> queryBillMasters(@PathVariable String accyear, @PathVariable String campusCd, @PathVariable String accUnitCd,
                                               Pageable pageable, PagedResourcesAssembler<BillMaster> assembler) {
 
-        QBillMaster billMaster = QBillMaster.billMaster;
-        Predicate predicate = billMaster
+        List<BillMaster> allInnerFetchJoin = billMasterRepository.findAllInnerFetchJoin(accyear, campusCd, accUnitCd, pageable);
+
+        QBillMaster qBillMaster = QBillMaster.billMaster;
+        Predicate predicate = qBillMaster
                 .accYear.eq(accyear)
-                .and(billMaster.campusCd.eq(campusCd))
-                .and(billMaster.accUnitCd.eq(accUnitCd))
+                .and(qBillMaster.campusCd.eq(campusCd))
+                .and(qBillMaster.accUnitCd.eq(accUnitCd))
                 ;
+
         Page<BillMaster> page = billMasterRepository.findAll(predicate, pageable);
 
         var pagedModel = assembler.toModel(page, b -> new BillMasterResource(b));
@@ -80,6 +85,13 @@ public class BillMasterController {
 
     @GetMapping("/{id}")
     public ResponseEntity<?> queryBillMaster(@PathVariable Long id) {
+
+        QBillMaster qBillMaster = QBillMaster.billMaster;
+        QCardProof qCardProof = QCardProof.cardProof;
+
+
+
+
         Optional<BillMaster> optionalBillMaster = this.billMasterRepository.findById(id);
 
         if (optionalBillMaster.isEmpty()) {

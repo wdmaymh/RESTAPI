@@ -1,5 +1,6 @@
 package ac.korea.isdevelop.restapi.billMaster;
 
+import ac.korea.isdevelop.restapi.cardProof.CardProof;
 import jdk.jfr.Name;
 import lombok.*;
 import org.modelmapper.internal.bytebuddy.implementation.bind.annotation.IgnoreForBinding;
@@ -7,6 +8,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 @Builder
 @AllArgsConstructor
@@ -24,52 +27,54 @@ public class BillMaster {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "billNoSeq")
     @Column(name = TABLE_PREFIX + "billNo")
-    public long billNo;
+    private long billNo;
     @Column(name = TABLE_PREFIX + "accYear", columnDefinition = "char(4)")
-    public String accYear;
+    private String accYear;
     @Column(name = TABLE_PREFIX + "campusCd", columnDefinition = "char(1)")
-    public String campusCd;
+    private String campusCd;
     @Column(name = TABLE_PREFIX + "accUnitCd", columnDefinition = "char(2)")
-    public String accUnitCd;
+    private String accUnitCd;
     @Column(name = TABLE_PREFIX + "billDt", columnDefinition = "varchar2(8)")
-    public String billDt;
+    private String billDt;
     @Column(name = TABLE_PREFIX + "billDocNo", columnDefinition = "varchar2(14)")
-    public String billDocNo;
+    private String billDocNo;
     @Column(name = TABLE_PREFIX + "billDeptCd", columnDefinition = "char(4)")
-    public String billDeptCd;
+    private String billDeptCd;
     @Column(name = TABLE_PREFIX + "billDivCd", columnDefinition = "char(2)")
-    public String billDivCd;
+    private String billDivCd;
     @Column(name = TABLE_PREFIX + "billTypeCd", columnDefinition = "char(3)")
-    public String billTypeCd;
+    private String billTypeCd;
     @Column(name = TABLE_PREFIX + "billKindCd", columnDefinition = "char(3)")
-    public String billKindCd;
+    private String billKindCd;
     @Column(name = TABLE_PREFIX + "wrtEmpObjNo", columnDefinition = "varchar2(6)")
-    public String wrtEmpObjNo;
+    private String wrtEmpObjNo;
     @Column(name = TABLE_PREFIX + "billTitle", columnDefinition = "varchar2(1000)")
-    public String billTitle;
+    private String billTitle;
     @Column(name = TABLE_PREFIX + "digest", columnDefinition = "varchar2(4000)")
-    public String digest;
+    private String digest;
     @Column(name = TABLE_PREFIX + "billStsCd", columnDefinition = "char(2)")
-    public String billStsCd;
+    private String billStsCd;
     @Column(name = TABLE_PREFIX + "billDeptAprvDt", columnDefinition = "varchar2(8)")
-    public String billDeptAprvDt;
+    private String billDeptAprvDt;
     @Column(name = TABLE_PREFIX + "deptAprvEmpObjNo", columnDefinition = "varchar2(10)")
-    public String deptAprvEmpObjNo;
+    private String deptAprvEmpObjNo;
     @Column(name = TABLE_PREFIX + "accDt", columnDefinition = "varchar2(8)")
-    public String accDt;
+    private String accDt;
     @Column(name = TABLE_PREFIX + "execAprvDt", columnDefinition = "varchar2(8)")
-    public String execAprvDt;
+    private String execAprvDt;
     @Column(name = TABLE_PREFIX + "billGrpNo")
-    public Long billGrpNo;
+    private Long billGrpNo;
     @Column(name = TABLE_PREFIX + "interfaceKey", columnDefinition = "varchar2(100)")
-    public String interfaceKey;
+    private String interfaceKey;
     @Column(name = TABLE_PREFIX + "interfaceDivCd", columnDefinition = "varchar2(7)")
-    public String interfaceDivCd;
-    public LocalDateTime crtDttm;
+    private String interfaceDivCd;
+    private LocalDateTime crtDttm;
     @Column(columnDefinition = "varchar2(20)")
-    public String crtId;
+    private String crtId;
     @Column(columnDefinition = "varchar2(50)")
-    public String crtPgmId;
+    private String crtPgmId;
     @Column(columnDefinition = "varchar2(20)")
-    public String crtIp;
+    private String crtIp;
+    @OneToMany(mappedBy = "billMaster", fetch = FetchType.LAZY)
+    private Set<CardProof> cardProofset = new LinkedHashSet<>();
 }

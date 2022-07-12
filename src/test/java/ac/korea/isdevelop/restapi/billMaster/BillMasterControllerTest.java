@@ -18,13 +18,12 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
-import java.util.stream.IntStream;
-
 import static org.springframework.restdocs.headers.HeaderDocumentation.*;
 import static org.springframework.restdocs.hypermedia.HypermediaDocumentation.linkWithRel;
 import static org.springframework.restdocs.hypermedia.HypermediaDocumentation.links;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
-import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -53,6 +52,7 @@ class BillMasterControllerTest {
 
         //When & Then
         this.mockMvc.perform(get("/api/billMasters/{id}", billNo))
+                .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("accUnitCd").exists())
                 .andExpect(jsonPath("accYear").exists())
@@ -76,7 +76,7 @@ class BillMasterControllerTest {
     public void getBillMasters() throws Exception {
 
         //Given
-        //IntStream.range(0, 30).forEach(i -> this.generateBillMaster(i));
+        //IntStream.range(0, 30~).forEach(i -> this.generateBillMaster(i));
 
         //When
         this.mockMvc.perform(get("/api/billMasters/2021/2/18")
@@ -260,7 +260,8 @@ class BillMasterControllerTest {
                                 fieldWithPath("_links.update-billMaster.href").description("Acc unit  of bill master"),
                                 fieldWithPath("_links.query-billMasters.href").description("Campus  of bill master"),
                                 fieldWithPath("_links.profile.href").description("Campus  of bill master"),
-                                fieldWithPath("table_PREFIX").description("Title of bill master")
+                                fieldWithPath("table_PREFIX").description("Title of bill master"),
+                                fieldWithPath("cardProofset").description("Title of bill master")
                         )
                 ))
         ;
