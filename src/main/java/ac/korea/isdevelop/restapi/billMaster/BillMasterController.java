@@ -1,6 +1,5 @@
 package ac.korea.isdevelop.restapi.billMaster;
 
-import ac.korea.isdevelop.restapi.cardProof.QCardProof;
 import ac.korea.isdevelop.restapi.common.ErrorsResource;
 import com.querydsl.core.types.Predicate;
 import org.modelmapper.ModelMapper;
@@ -17,7 +16,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.net.URI;
-import java.util.List;
 import java.util.Optional;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
@@ -65,16 +63,16 @@ public class BillMasterController {
     public ResponseEntity<?> queryBillMasters(@PathVariable String accyear, @PathVariable String campusCd, @PathVariable String accUnitCd,
                                               Pageable pageable, PagedResourcesAssembler<BillMaster> assembler) {
 
-        List<BillMaster> allInnerFetchJoin = billMasterRepository.findAllInnerFetchJoin(accyear, campusCd, accUnitCd, pageable);
-
         QBillMaster qBillMaster = QBillMaster.billMaster;
+
         Predicate predicate = qBillMaster
                 .accYear.eq(accyear)
                 .and(qBillMaster.campusCd.eq(campusCd))
-                .and(qBillMaster.accUnitCd.eq(accUnitCd))
-                ;
+                .and(qBillMaster.accUnitCd.eq(accUnitCd));
 
-        Page<BillMaster> page = billMasterRepository.findAll(predicate, pageable);
+        Page<BillMaster> page = billMasterRepository.findAllInnerFetchJoin(predicate, pageable);
+
+        //List<BillMaster> innerFetchJoin = billMasterRepository.findAllInnerFetchJoin(predicate);
 
         var pagedModel = assembler.toModel(page, b -> new BillMasterResource(b));
         pagedModel.add(Link.of("/docs/index.html#resources-billMasters-list").withRel("profile"));
@@ -85,12 +83,6 @@ public class BillMasterController {
 
     @GetMapping("/{id}")
     public ResponseEntity<?> queryBillMaster(@PathVariable Long id) {
-
-        QBillMaster qBillMaster = QBillMaster.billMaster;
-        QCardProof qCardProof = QCardProof.cardProof;
-
-
-
 
         Optional<BillMaster> optionalBillMaster = this.billMasterRepository.findById(id);
 
