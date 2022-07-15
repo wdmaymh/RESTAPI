@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="ac.korea.isdevelop.restapi.mapper.NaccMapper">
+
+    <select id="getNacc200List" resultType="java.util.HashMap" parameterType="java.util.HashMap">
+        SELECT
+        NACC200_BILL_NO AS BILL_NO
+        FROM NACC200TL
+        WHERE NACC200_BILL_NO IN ('17533490','17533491','17533492')
+        AND NACC200_ACC_YEAR= #{accYear}
+    </select>
+</mapper>
