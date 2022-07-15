@@ -1,0 +1,62 @@
+[
+{
+	"CODE":"billNo",
+	"NAME":"BILL_NO",
+	"SET": null
+},
+{
+	"CODE":"billDocNo",
+	"NAME":"결의서번호",
+	"SET": null
+},
+{
+	"CODE":"billDeptCd",
+	"NAME":"결의부서",
+	"SET": null
+},
+{
+	"CODE":"billTitle",
+	"NAME":"제목",
+	"SET": null
+},
+{
+	"CODE":"accDt",
+	"NAME":"회계일자",
+	"SET": null
+},
+{
+	"CODE":"cardNo",
+	"NAME":"카드번호",
+	"SET":"cardProofset"
+},
+{
+	"CODE":"cardAprvNo",
+	"NAME":"승인번호",
+	"SET":"cardProofset"
+},
+{
+	"CODE":"cardAprvDt",
+	"NAME":"승인일자",
+	"SET":"cardProofset"
+},
+{
+	"CODE":"trdDt",
+	"NAME":"거래일자",
+	"SET":"cardProofset"
+},
+{
+	"CODE":"cardSettDt",
+	"NAME":"결제일자",
+	"SET":"cardProofset"
+},
+{
+	"CODE":"useAmt",
+	"NAME":"사용금액",
+	"SET":"cardProofset"
+},
+{
+	"CODE":"chargeAmt",
+	"NAME":"청구금액",
+	"SET":"cardProofset"
+}
+]

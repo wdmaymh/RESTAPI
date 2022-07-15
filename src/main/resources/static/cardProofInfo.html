@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Card Proof</title>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.15.6/xlsx.core.min.js"></script>
+    <script src="http://cdn.jsdelivr.net/g/filesaver.js"></script>
+    <script type="text/javascript" src="./js/common.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <style>
+        .wrap-loading{ /*화면 전체를 어둡게 합니다.*/
+            position: fixed;
+            left:0;
+            right:0;
+            top:0;
+            bottom:0;
+            background: rgba(0,0,0,0.2); /*not in ie */
+            filter: progid:DXImageTransform.Microsoft.Gradient(startColorstr='#20000000', endColorstr='#20000000');/* ie */
+
+        }
+        .wrap-loading div{ /*로딩 이미지*/
+            position: fixed;
+            top:50%;
+            left:50%;
+            margin-left: -21px;
+            margin-top: -21px;
+        }
+        .display-none{ /*감추기*/
+            display:none;
+        }
+
+    </style>
+
+</head>
+
+
+<script type="text/javascript">
+    function callAPI() {
+
+        var accYear = $('#accYear').val();
+        var campusCd = $('#campusCd').val();
+        var accUnitcd = $('#accUnitCd').val();
+        var url = `http://local.korea.ac.kr:8080/api/billMasters/${accYear}/${campusCd}/${accUnitcd}`
+        var data = {page: "1", size: "10", sort: "billTitle,DESC"}
+        console.log(url)
+
+        $.ajax({
+            type: "GET",
+            url: url,
+            data: data,
+            success: function (response, status) {
+
+                const billMasters = response._embedded.billMasterList;
+                $.getJSON("./cardProofInfo.json", function (json){
+                    const newBillMasters = jsonParser(billMasters, json)
+                    downloadExcel("test", newBillMasters, json)
+                });
+
+
+
+            }
+            ,beforeSend:function(){
+                $('.wrap-loading').removeClass('display-none');
+            }
+            ,complete:function(){
+                $('.wrap-loading').addClass('display-none');
+            }
+
+        })
+    }
+
+</script>
+<body>
+
+<div class="wrap-loading display-none">
+    <div><img src="./images/loading.gif" /></div>
+</div>
+
+<div>
+    <h1>카드사용내역 Excel Download</h1>
+    <form onsubmit="callAPI()" id="acc">
+        <label for="accYear">회계년도:</label><br>
+        <input type="text" id="accYear" name="accYear" value="2022"><br>
+        <label for="campusCd">캠퍼스:</label><br>
+        <input type="text" id="campusCd" name="campusCd" value="2"><br>
+        <label for="accUnitCd">회계단위:</label><br>
+        <input type="text" id="accUnitCd" name="accUnitCd" value="18"><br><br>
+    </form>
+    <input type="button" id="button1" onclick="callAPI();" value="Download"/>
+</div>
+
+</body>
+</html>
