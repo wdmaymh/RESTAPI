@@ -12,4 +12,6 @@ public interface BillmasterCustomRepository {
     Page<BillMaster> findAllInnerFetchJoin(Predicate predicate, Pageable pageable);
 
     List<BillMaster> findAllInnerFetchJoin(Predicate predicate);
+
+    List<BillMasterDto> findAllInnerFetchJoin(Predicate predicate, int test);
 }

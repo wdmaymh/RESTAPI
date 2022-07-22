@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.net.URI;
+import java.util.List;
 import java.util.Optional;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
@@ -59,20 +60,19 @@ public class BillMasterController {
         return ResponseEntity.badRequest().body(new ErrorsResource(errors));
     }
 
-    @GetMapping("/{accyear}/{campusCd}/{accUnitCd}")
-    public ResponseEntity<?> queryBillMasters(@PathVariable String accyear, @PathVariable String campusCd, @PathVariable String accUnitCd,
+    @GetMapping
+    public ResponseEntity<?> queryBillMasters(BillMasterDto billMasterDto,
                                               Pageable pageable, PagedResourcesAssembler<BillMaster> assembler) {
 
         QBillMaster qBillMaster = QBillMaster.billMaster;
 
         Predicate predicate = qBillMaster
-                .accYear.eq(accyear)
-                .and(qBillMaster.campusCd.eq(campusCd))
-                .and(qBillMaster.accUnitCd.eq(accUnitCd));
-
+                .accYear.eq(billMasterDto.getAccYear())
+                .and(qBillMaster.campusCd.eq(billMasterDto.getCampusCd()))
+                .and(qBillMaster.accUnitCd.eq(billMasterDto.getAccUnitCd()));
+        List<BillMasterDto> innerFetchJoin = billMasterRepository.findAllInnerFetchJoin(predicate, 1);
         Page<BillMaster> page = billMasterRepository.findAllInnerFetchJoin(predicate, pageable);
 
-        //List<BillMaster> innerFetchJoin = billMasterRepository.findAllInnerFetchJoin(predicate);
 
         var pagedModel = assembler.toModel(page, b -> new BillMasterResource(b));
         pagedModel.add(Link.of("/docs/index.html#resources-billMasters-list").withRel("profile"));

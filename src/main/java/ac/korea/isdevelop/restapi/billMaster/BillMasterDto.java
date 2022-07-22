@@ -1,11 +1,13 @@
 package ac.korea.isdevelop.restapi.billMaster;
 
+import com.querydsl.core.annotations.QueryProjection;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotEmpty;
+
 
 @Builder
 @NoArgsConstructor
@@ -30,5 +32,13 @@ public class BillMasterDto {
     public String billStsCd;
     public String interfaceKey;
     public String interfaceDivCd;
+
+    @QueryProjection
+    public BillMasterDto(String accYear, String campusCd, String accUnitCd) {
+        this.accYear = accYear;
+        this.campusCd = campusCd;
+        this.accUnitCd = accUnitCd;
+    }
+
 
 }

@@ -79,9 +79,12 @@ class BillMasterControllerTest {
         //IntStream.range(0, 30~).forEach(i -> this.generateBillMaster(i));
 
         //When
-        this.mockMvc.perform(get("/api/billMasters/2021/2/18")
-                        .param("page", "1")
-                        .param("size", "10")
+        this.mockMvc.perform(get("/api/billMasters")
+                        .param("accYear", "2021")
+                        .param("campusCd", "2")
+                        .param("accUnitCd", "18")
+                        .param("page", "2")
+                        .param("size", "5")
                         .param("sort", "billTitle,DESC")
                 )
                 .andDo(print())
@@ -108,6 +111,7 @@ class BillMasterControllerTest {
 
         BillMaster newBillMaster = this.billMasterRepository.save(billMaster);
 
+
         return newBillMaster;
 
 
@@ -124,6 +128,8 @@ class BillMasterControllerTest {
                 .accUnitCd("01")
                 .billNo(100)
                 .build();
+
+
 
         mockMvc.perform(post("/api/billMasters/")
                         .contentType(MediaType.APPLICATION_JSON)
