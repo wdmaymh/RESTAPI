@@ -1,10 +1,14 @@
 package ac.korea.isdevelop.restapi.billMaster;
 
+import ac.korea.isdevelop.restapi.cardProof.QCardProof;
+import ac.korea.isdevelop.restapi.getDto.BillMasterCardProofDto;
+import ac.korea.isdevelop.restapi.getDto.QBillMasterCardProofDto;
 import com.querydsl.core.QueryResults;
 import com.querydsl.core.types.Predicate;
 import com.querydsl.jpa.JPQLQuery;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import org.springframework.context.annotation.Primary;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -43,27 +47,26 @@ public class BillmasterCustomRepositoryImpl extends QuerydslRepositorySupport im
     }
 
     @Override
-    public List<BillMaster> findAllInnerFetchJoin(Predicate predicate) {
+    public List<BillMasterCardProofDto> findAllInnerFetchJoin(Predicate predicate) {
         QBillMaster qBillMaster = QBillMaster.billMaster;
-
-        JPQLQuery<BillMaster> query =
-
-                        from(qBillMaster).where(predicate)
-                .innerJoin(qBillMaster.cardProofset).fetchJoin();
-
-        return query.fetch();
-    }
-
-    @Override
-    public List<BillMasterDto> findAllInnerFetchJoin(Predicate predicate, int test) {
-        QBillMaster qBillMaster = QBillMaster.billMaster;
-        JPAQuery<BillMasterDto> query = queryFactory.select(
-                new QBillMasterDto(
-                        qBillMaster.accYear,
-                        qBillMaster.campusCd,
-                        qBillMaster.accUnitCd))
+        QCardProof qCardProof = QCardProof.cardProof;
+        JPAQuery<BillMasterCardProofDto> query = queryFactory.select(
+                new QBillMasterCardProofDto(
+                        qBillMaster.billNo,
+                        qBillMaster.billDocNo,
+                        qBillMaster.billDeptCd,
+                        qBillMaster.billTitle,
+                        qBillMaster.accDt,
+                        qCardProof.cardNo,
+                        qCardProof.cardAprvNo,
+                        qCardProof.cardAprvDt,
+                        qCardProof.trdDt,
+                        qCardProof.cardSettDt,
+                        qCardProof.useAmt,
+                        qCardProof.chargeAmt
+                ))
                 .from(qBillMaster).where(predicate)
-                .innerJoin(qBillMaster.cardProofset);
+                .innerJoin(qBillMaster.cardProofset, qCardProof);
         return query.fetch();
     }
 }

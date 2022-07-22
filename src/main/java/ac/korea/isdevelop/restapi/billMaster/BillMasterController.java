@@ -1,6 +1,7 @@
 package ac.korea.isdevelop.restapi.billMaster;
 
 import ac.korea.isdevelop.restapi.common.ErrorsResource;
+import ac.korea.isdevelop.restapi.getDto.BillMasterCardProofDto;
 import com.querydsl.core.types.Predicate;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
@@ -70,7 +71,7 @@ public class BillMasterController {
                 .accYear.eq(billMasterDto.getAccYear())
                 .and(qBillMaster.campusCd.eq(billMasterDto.getCampusCd()))
                 .and(qBillMaster.accUnitCd.eq(billMasterDto.getAccUnitCd()));
-        List<BillMasterDto> innerFetchJoin = billMasterRepository.findAllInnerFetchJoin(predicate, 1);
+        List<BillMasterCardProofDto> innerFetchJoin = billMasterRepository.findAllInnerFetchJoin(predicate);
         Page<BillMaster> page = billMasterRepository.findAllInnerFetchJoin(predicate, pageable);
 
 
